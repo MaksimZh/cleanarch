@@ -105,3 +105,14 @@ class RobotCleaner:
     # Return current angle of the robot
     def get_angle(self) -> Angle:
         return self.__angle
+    
+
+    # COMMANDS
+
+    # Move robot to distance
+    def move(self, distance: Distance) -> None:
+        self.__position = self.__position.shift(self.__angle, distance)
+
+    # Turn robot by anble
+    def turn(self, angle_degrees: int) -> None:
+        self.__angle = self.__angle.turn(angle_degrees)

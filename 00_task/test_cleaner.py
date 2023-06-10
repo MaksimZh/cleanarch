@@ -103,6 +103,33 @@ class Test_RobotCleaner(unittest.TestCase):
         self.assertEqual(rc.get_position(), Position(0, 0))
         self.assertEqual(rc.get_angle(), Angle(0))
 
+    def test_motion(self):
+        rc = RobotCleaner()
+        self.assertEqual(rc.get_position(), Position(0, 0))
+        self.assertEqual(rc.get_angle(), Angle(0))
+        rc.move(Distance(100))
+        self.assertEqual(rc.get_position(), Position(100, 0))
+        self.assertEqual(rc.get_angle(), Angle(0))
+        rc.move(Distance(20))
+        self.assertEqual(rc.get_position(), Position(120, 0))
+        self.assertEqual(rc.get_angle(), Angle(0))
+        rc.turn(30)
+        self.assertEqual(rc.get_position(), Position(120, 0))
+        self.assertEqual(rc.get_angle(), Angle(30))
+        rc.turn(60)
+        self.assertEqual(rc.get_position(), Position(120, 0))
+        self.assertEqual(rc.get_angle(), Angle(90))
+        rc.move(Distance(30))
+        self.assertEqual(rc.get_position(), Position(120, 30))
+        self.assertEqual(rc.get_angle(), Angle(90))
+        rc.turn(-30)
+        self.assertEqual(rc.get_position(), Position(120, 30))
+        self.assertEqual(rc.get_angle(), Angle(60))
+        rc.move(Distance(100))
+        self.assertEqual(rc.get_position(), Position(170, 117))
+        self.assertEqual(rc.get_angle(), Angle(60))
+
+
 
 if __name__ == '__main__':
     unittest.main()
