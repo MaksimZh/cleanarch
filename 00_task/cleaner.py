@@ -17,12 +17,15 @@ class Angle:
     __value: int
     
     def __init__(self, value: int) -> None:
-        self.__value = value
+        self.__value = value % 360
 
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, Angle):
             return False
         return self.__value == other.__value
+    
+    def turn(self, delta: int) -> "Angle":
+        return Angle(self.__value + delta)
 
 
 class Position:
