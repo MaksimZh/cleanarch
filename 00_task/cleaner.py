@@ -1,4 +1,5 @@
 from enum import Enum, auto
+from math import sin, cos, radians
 
 
 class State(Enum):
@@ -24,8 +25,27 @@ class Angle:
             return False
         return self.__value == other.__value
     
+    def __int__(self) -> int:
+        return self.__value
+    
     def turn(self, delta: int) -> "Angle":
         return Angle(self.__value + delta)
+
+
+class Distance:
+    __value: int
+
+    def __init__(self, value: int) -> None:
+        assert value >= 0
+        self.__value = value
+
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, Distance):
+            return False
+        return self.__value == other.__value
+    
+    def __int__(self) -> int:
+        return self.__value
 
 
 class Position:
@@ -38,6 +58,18 @@ class Position:
         if not isinstance(other, Position):
             return False
         return self.__coords == other.__coords
+    
+    def get_x(self) -> int:
+        return self.__coords[0]
+
+    def get_y(self) -> int:
+        return self.__coords[1]
+    
+    def shift(self, direction: Angle, distance: Distance) -> "Position":
+        angle_radians = radians(int(direction))
+        dx = round(int(distance) * cos(angle_radians))
+        dy = round(int(distance) * sin(angle_radians))
+        return Position(self.get_x() + dx, self.get_y() + dy)
 
 
 class RobotCleaner:
