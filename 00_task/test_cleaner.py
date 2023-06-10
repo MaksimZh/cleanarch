@@ -1,6 +1,6 @@
 import unittest
 
-from cleaner import State, Device, Angle, Distance, Position, RobotCleaner
+from cleaner import Device, Angle, Distance, Position, RobotCleaner, run
 
 
 class Test_Angle(unittest.TestCase):
@@ -98,8 +98,7 @@ class Test_RobotCleaner(unittest.TestCase):
 
     def test_init(self):
         rc = RobotCleaner()
-        self.assertEqual(rc.get_state(), State.IDLE)
-        self.assertEqual(rc.get_device(), Device.NONE)
+        self.assertEqual(rc.get_device(), Device.WATER)
         self.assertEqual(rc.get_position(), Position(0, 0))
         self.assertEqual(rc.get_angle(), Angle(0))
 
@@ -129,6 +128,42 @@ class Test_RobotCleaner(unittest.TestCase):
         self.assertEqual(rc.get_position(), Position(170, 117))
         self.assertEqual(rc.get_angle(), Angle(60))
 
+    def test_device(self):
+        rc = RobotCleaner()
+        self.assertEqual(rc.get_device(), Device.WATER)
+        rc.set_device(Device.WATER)
+        self.assertEqual(rc.get_device(), Device.WATER)
+        rc.set_device(Device.SOAP)
+        self.assertEqual(rc.get_device(), Device.SOAP)
+        rc.set_device(Device.BRUSH)
+        self.assertEqual(rc.get_device(), Device.BRUSH)
+
+
+class Test_run(unittest.TestCase):
+    
+    def test_empty(self):
+        self.assertEqual(
+            run([]),
+            [])
+
+    def test_example(self):
+        self.assertEqual(
+            run([
+                "move 100",
+                "turn -90",
+                "set soap",
+                "start",
+                "move 50",
+                "stop",
+            ]),
+            [
+                "POS 100, 0",
+                "ANGLE 270",
+                "STATE soap",
+                "START WITH soap",
+                "POS 100, -50",
+                "STOP",
+            ])
 
 
 if __name__ == '__main__':

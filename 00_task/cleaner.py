@@ -1,14 +1,8 @@
-from enum import Enum, auto
+from enum import Enum
 from math import sin, cos, radians
 
 
-class State(Enum):
-    IDLE = auto()
-    RUNNING = auto()
-
-
 class Device(Enum):
-    NONE = "none"
     WATER = "water"
     SOAP = "soap"
     BRUSH = "brush"
@@ -73,26 +67,19 @@ class Position:
 
 
 class RobotCleaner:
-    __state: State
     __device: Device
     __position: Position
     __angle: Angle
     
     # CONSTRUCTOR
-    # POST: created new robot with:
-    #       state=IDLE, device=none, position=(0, 0), angle=0
+    # POST: created new robot with: device=WATER, position=(0, 0), angle=0
     def __init__(self) -> None:
-        self.__state = State.IDLE
-        self.__device = Device.NONE
+        self.__device = Device.WATER
         self.__position = Position(0, 0)
         self.__angle = Angle(0)
 
 
     # QUERIES
-
-    # Return current state of the robot
-    def get_state(self) -> State:
-        return self.__state
 
     # Return current device of the robot
     def get_device(self) -> Device:
@@ -113,6 +100,43 @@ class RobotCleaner:
     def move(self, distance: Distance) -> None:
         self.__position = self.__position.shift(self.__angle, distance)
 
-    # Turn robot by anble
+    # Turn robot by angle
     def turn(self, angle_degrees: int) -> None:
         self.__angle = self.__angle.turn(angle_degrees)
+
+    # Set current cleaning device
+    def set_device(self, device: Device) -> None:
+        self.__device = device
+
+
+def parse_command(command: str) -> tuple[str, list[str]]:
+    words = command.split()
+    return words[0], words[1:]
+
+
+def run(commands: list[str]) -> list[str]:
+    robot = RobotCleaner()
+    result = list[str]()
+    for cmd in commands:
+        action, args = parse_command(cmd)
+        match action:
+            case "move":
+                distance = Distance(int(args[0]))
+                robot.move(distance)
+                position = robot.get_position()
+                result.append(f"POS {position.get_x()}, {position.get_y()}")
+            case "turn":
+                delta = int(args[0])
+                robot.turn(delta)
+                result.append(f"ANGLE {int(robot.get_angle())}")
+            case "set":
+                device = Device(args[0])
+                robot.set_device(device)
+                result.append(f"STATE {robot.get_device().value}")
+            case "start":
+                result.append(f"START WITH {robot.get_device().value}")
+            case "stop":
+                result.append(f"STOP")
+            case _:
+                assert False
+    return result
