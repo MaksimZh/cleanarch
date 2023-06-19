@@ -3,7 +3,7 @@ import unittest
 from devices import Device
 
 
-class Test_RobotCleaner(unittest.TestCase):
+class Test_Device(unittest.TestCase):
 
     def test(self):
         d = Device("water", "soap", "brush")
