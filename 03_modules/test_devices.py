@@ -7,13 +7,13 @@ class Test_RobotCleaner(unittest.TestCase):
 
     def test(self):
         d = Device("water", "soap", "brush")
-        self.assertEqual(d.get(), "water")
+        self.assertEqual(d.get_name(), "water")
         d.select("water")
-        self.assertEqual(d.get(), "water")
+        self.assertEqual(d.get_name(), "water")
         d.select("soap")
-        self.assertEqual(d.get(), "soap")
+        self.assertEqual(d.get_name(), "soap")
         d.select("brush")
-        self.assertEqual(d.get(), "brush")
+        self.assertEqual(d.get_name(), "brush")
 
     def test_error(self):
         self.assertRaises(

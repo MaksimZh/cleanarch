@@ -7,7 +7,7 @@ class Device:
         self.__devices = set(devices)
         self.__selected_device = devices[0]
 
-    def get(self) -> str:
+    def get_name(self) -> str:
         return self.__selected_device
     
     def select(self, name: str) -> None:
