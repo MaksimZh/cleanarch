@@ -1,3 +1,3 @@
 {
-    "ignore": ["04_hipster/pure_robot.py"]
+    "ignore": ["*/pure_robot.py", "05_stateless/*"]
 }
