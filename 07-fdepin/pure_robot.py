@@ -21,10 +21,10 @@ class RobotState:
 Message = tuple[Any, ...]
 
 # взаимодействие с роботом вынесено в отдельную функцию
-Transfer = Callable[[Message], None]
+TransferFunc = Callable[[Message], None]
 
 # перемещение
-def move(transfer: Transfer, dist: float, state: RobotState) -> RobotState:
+def move(transfer: TransferFunc, dist: float, state: RobotState) -> RobotState:
     angle_rads = state.angle * (math.pi/180.0)
     new_state = RobotState(
         state.x + dist * math.cos(angle_rads),
@@ -35,7 +35,7 @@ def move(transfer: Transfer, dist: float, state: RobotState) -> RobotState:
     return new_state
 
 # поворот
-def turn(transfer: Transfer, turn_angle: float, state: RobotState) -> RobotState:
+def turn(transfer: TransferFunc, turn_angle: float, state: RobotState) -> RobotState:
     new_state = RobotState(
         state.x,
         state.y,
@@ -45,7 +45,7 @@ def turn(transfer: Transfer, turn_angle: float, state: RobotState) -> RobotState
     return new_state
 
 # установка режима работы
-def set_state(transfer: Transfer, new_internal_state: str, state: RobotState) -> RobotState:
+def set_state(transfer: TransferFunc, new_internal_state: str, state: RobotState) -> RobotState:
     if new_internal_state=='water':
         self_state = DeviceState.WATER
     elif new_internal_state=='soap':
@@ -63,28 +63,11 @@ def set_state(transfer: Transfer, new_internal_state: str, state: RobotState) ->
     return new_state
 
 # начало чистки
-def start(transfer: Transfer, state: RobotState) -> RobotState:
+def start(transfer: TransferFunc, state: RobotState) -> RobotState:
     transfer(('START WITH', state.state))
     return state
 
 # конец чистки
-def stop(transfer: Transfer, state: RobotState) -> RobotState:
+def stop(transfer: TransferFunc, state: RobotState) -> RobotState:
     transfer(('STOP',))
-    return state
-
-
-# интерпретация набора команд
-def make(transfer: Transfer, code: list[str], state: RobotState) -> RobotState:
-    for command in code:
-        cmd = command.split(' ')
-        if cmd[0]=='move':
-            state = move(transfer,int(cmd[1]),state)
-        elif cmd[0]=='turn':
-            state = turn(transfer,int(cmd[1]),state)
-        elif cmd[0]=='set':
-            state = set_state(transfer,cmd[1],state)
-        elif cmd[0]=='start':
-            state = start(transfer,state)
-        elif cmd[0]=='stop':
-            state = stop(transfer,state)
     return state
